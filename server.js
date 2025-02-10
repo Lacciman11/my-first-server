@@ -5,7 +5,7 @@ const User = require('./schema');
 const validateUser = require('./middleWare');
 
 const app = express();
-const port = 5000 || 10000;
+const port = 5000;
 
 // Connect to MongoDB
 connectDB();
@@ -85,6 +85,6 @@ app.delete('/users/email/:email', async (req, res) => {
 
 
 // Start the server
-app.listen(port, "0.0.0.0", () => {
-    console.log(`Server running on http://0.0.0.0:${port}`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
