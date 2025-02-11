@@ -15,7 +15,7 @@ connectDB();
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: ['https://localhost:5174', 'http://another-allowed.com'], // Allowed frontend URLs
+    origin: ['https://localhost:5174', 'https://another-allowed.com'], // Allowed frontend URLs
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed request methods
     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed request headers
 }));
