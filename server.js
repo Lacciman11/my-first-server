@@ -15,12 +15,21 @@ connectDB();
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: ['https://localhost:5174', 'https://another-allowed.com'], // Allowed frontend URLs
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed request methods
-    allowedHeaders: ['Content-Type', 'Authorization'] // Allowed request headers
+    origin: '*', // Allows all origins (Change this to specific domains if needed)
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// ✅ Handle preflight requests
 app.options('*', cors());
+
+// ✅ Manually Set Headers for Extra Safety
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Allows all origins
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 // Routes
 // Create a new user
 app.post('/users', validateUser, async (req, res) => {
