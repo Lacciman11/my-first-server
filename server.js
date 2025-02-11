@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const connectDB = require('./config');
 const User = require('./schema');
 const validateUser = require('./middleWare');
+const cors = require('cors');
 
 const app = express();
 const port = 5000;
@@ -12,6 +13,12 @@ connectDB();
 
 // Middleware
 app.use(bodyParser.json());
+
+app.use(cors({
+    origin: ['http://your-frontend.com', 'http://another-allowed.com'], // Allowed frontend URLs
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed request methods
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allowed request headers
+}));
 
 // Routes
 // Create a new user
