@@ -20,6 +20,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed request headers
 }));
 
+app.options('*', cors());
 // Routes
 // Create a new user
 app.post('/users', validateUser, async (req, res) => {
