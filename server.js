@@ -1,14 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config');
-const User = require('./schema');
-const validateUser = require('./middleWare');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const csrf = require('csurf');
 const rateLimit = require('express-rate-limit');
+const fs = require('fs');
+const path = require('path');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const port = 5000;
@@ -20,9 +21,14 @@ connectDB();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // Parse cookies
-app.use(morgan('combined')); // Log HTTP requests
+// Create a write stream (in append mode) for logging requests
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 
+// Setup Morgan to log requests to access.log
+app.use(morgan('combined', { stream: accessLogStream }));
 // Security Middleware (Helmet with enhanced protection)
+
+
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -62,8 +68,8 @@ app.use((req, res, next) => {
 });
 
 // CSRF protection
-const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
+// const csrfProtection = csrf({ cookie: true });
+// app.use(csrfProtection);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -74,72 +80,10 @@ app.use(limiter);
 
 // Routes
 // Create a new user
-app.post('/users', validateUser, async (req, res) => {
-    try {
-        const { username, email, address, nickname, dob } = req.body;
-        const user = new User({ username, email, address, nickname, dob });
-        await user.save();
-        res.status(201).json(user);
-    } catch (error) {
-        res.status(500).json({ message: 'Error creating user', error: error.message });
-    }
-});
+app.use(userRoutes);
 
-// Get a single user by ID
-app.get('/users/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching user', error: error.message });
-    }
-});
-
-app.get('/users/email/:email', async (req, res) => {
-    try {
-        const user = await User.findOne({ email: req.params.email });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching user', error: error.message });
-    }
-});
-
-app.put('/users/email/:email', async (req, res) => {
-    try {
-        const updatedUser = await User.findOneAndUpdate(
-            { email: req.params.email }, // Find user by email
-            { $set: req.body }, // Update fields with request body
-            { new: true, runValidators: true } // Return updated user, validate data
-        );
-
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        res.json(updatedUser);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating user', error: error.message });
-    }
-});
-
-app.delete('/users/email/:email', async (req, res) => {
-    try {
-        const deletedUser = await User.findOneAndDelete({ email: req.params.email });
-
-        if (!deletedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        res.json({ message: 'User deleted successfully', deletedUser });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting user', error: error.message });
-    }
+app.get('/', async (req, res) => {
+   res.send('Hello World');
 });
 
 // Start the server
