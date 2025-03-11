@@ -7,7 +7,7 @@ const {
     updateUser,
     deleteUser,
     getAllUsers, // Import the new function
-} = require('../controllers/userController');
+} = require('../controllers/userControllers');
 
 // Existing routes
 router.post('/', createUser);
