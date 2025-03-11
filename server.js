@@ -5,7 +5,6 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const csrf = require('csurf');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
@@ -67,9 +66,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// CSRF protection
-// const csrfProtection = csrf({ cookie: true });
-// app.use(csrfProtection);
 
 // Rate limiting
 const limiter = rateLimit({
