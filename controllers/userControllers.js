@@ -16,6 +16,15 @@ const createUser = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find(); // Fetch all users from the database
+        res.json(users); // Return the list of users
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
 const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -77,5 +86,6 @@ module.exports = {
     getUserById,
     getUserByEmail,
     updateUser,
-    deleteUser
+    deleteUser,
+    getAllUsers,
 };
