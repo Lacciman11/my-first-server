@@ -2,16 +2,38 @@ const User = require('../models/userSchema');
 const bcrypt = require('bcryptjs');
 
 const createUser = async (req, res) => {
-    console.log('called')
+    console.log('createUser called');
     try {
         const { username, email, address, nickname, dob, password } = req.body;
 
-        console.log(req.body)
-        const hashedPassword = await bcrypt.hash(password, 10); 
-        const user = new User({ username, email, address, nickname, dob, password: hashedPassword });
+        // Check if the email already exists in the database
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email already in use' });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new user
+        const user = new User({
+            username,
+            email,
+            address,
+            nickname,
+            dob,
+            password: hashedPassword,
+        });
+
+        // Save the user to the database
         await user.save();
-        res.status(201).json(user);
+
+        // Respond with the created user (excluding the password)
+        const userResponse = user.toObject();
+        delete userResponse.password;
+        res.status(201).json(userResponse);
     } catch (error) {
+        console.error('Error creating user:', error);
         res.status(500).json({ message: 'Error creating user', error: error.message });
     }
 };
