@@ -51,10 +51,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ Handle preflight requests
 app.options('*', cors());
 
-// ✅ Manually Set Headers for Extra Safety
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*'); // Allows all origins
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

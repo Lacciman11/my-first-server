@@ -11,12 +11,11 @@ const {
 
 // Existing routes
 router.post('/users', createUser);
+router.get('/getAllUsers', getAllUsers);
 router.get('/users/:id', getUserById);
 router.get('/users/email/:email', getUserByEmail);
 router.put('/users/email/:email', updateUser);
 router.delete('/users/email/:email', deleteUser);
 
 // New route for fetching all users
-router.get('/getAllUsers', getAllUsers);
-
 module.exports = router;
