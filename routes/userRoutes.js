@@ -10,13 +10,13 @@ const {
 } = require('../controllers/userControllers');
 
 // Existing routes
-router.post('/', createUser);
-router.get('/:id', getUserById);
-router.get('/email/:email', getUserByEmail);
-router.put('/email/:email', updateUser);
-router.delete('/email/:email', deleteUser);
+router.post('/users', createUser);
+router.get('/users/:id', getUserById);
+router.get('/users/email/:email', getUserByEmail);
+router.put('/users/email/:email', updateUser);
+router.delete('/users/email/:email', deleteUser);
 
 // New route for fetching all users
-router.get('/', getAllUsers);
+router.get('/getAllUsers', getAllUsers);
 
 module.exports = router;
